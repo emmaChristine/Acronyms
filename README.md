@@ -2,6 +2,7 @@
 Tech Abbreviations
 
 Draft app written using Flutter to browse acronyms based on categories.
+Flutter uses Dart, an object-oriented language, class-based, garbage collected language with C-style syntax.
 
 
 ###Flutter advantages
@@ -31,7 +32,8 @@ Draft app written using Flutter to browse acronyms based on categories.
 ###Android equivalents:
 - An Activity is a Route. Navigate to a new route using the Navigator. (push/pop)
 - IPS is done with Settings arguments, similar to intents, POJOs will be serialized automatically.
-- 
+- Layouts are not written in XML, but with a widget tree.
+- Flutter is single threaded and run an event loop (like Node.js). For I/O work, async/await methods are all you need.
 
 
 ###Testing in Flutter

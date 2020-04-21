@@ -128,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: ListTile(
             title: Text(
                 category,
-                style: _biggerFont),
+                style: TextStyle(fontFamily: 'LatoRegular', fontSize: 18.0)),
             trailing: Icon(Icons.chevron_right),
             onTap: (){
               print('xxx');
@@ -195,7 +195,7 @@ class CategoryScreen extends StatelessWidget {
         child: ListTile(
             title: Text(
                 acronym.title,
-                style: _biggerFont),
+                style: TextStyle(fontFamily: 'LatoRegular', fontSize: 18.0)),
             subtitle: Text(acronym.description),
 
             onTap: () {
