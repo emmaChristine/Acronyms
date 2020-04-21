@@ -1,13 +1,52 @@
+/**
+ *
+ * Small app written using Flutter to browse acronyms based on categories.
+ */
+
 import 'package:flutter/material.dart';
+//import 'dart:convert';
+
+// Parse json file in the background
+//Future<List<Photo>> fetchPhotos(http.Client client) async {
+//  final response =
+//  await client.get('https://jsonplaceholder.typicode.com/photos');
+//
+//  // Use the compute function to run parsePhotos in a separate isolate.
+//  return compute(parsePhotos, response.body);
+//}
+
+// A function that converts a response body into a List<Abbreviation>.
+//List<Photo> parseAbbreviations(String responseBody) {
+//  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+//
+//  return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
+//}
 
 void main() => runApp(MyApp());
+
+class Acronym {
+  final String title;
+  final String description;
+  final String category;
+
+  Acronym(this.title, this.description, this.category);
+}
+
+class Category {
+  final String title;
+  final List<Acronym> items;
+
+  Category(this.title, this.items);
+}
+
+final _biggerFont = const TextStyle(fontSize: 18.0);
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Acronyms finder',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -18,14 +57,16 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
       ),
-      home: MyHomePage(title: ' Acronym finder \n Search for the meaning of an acronym...'),
+      home: MyHomePage(title: 'Acronyms finder'),
     );
   }
+
 }
 
 class MyHomePage extends StatefulWidget {
+
   MyHomePage({Key key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -44,68 +85,150 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+  final _categories = <String> ['Cloud Computing', 'Blogging', 'AI', 'Database',
+    'Development', 'IT Security', 'Server/IT Infrastructure', 'Network/Internet'];
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
+
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
-      ),
+      body: _buildCategories(_categories),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+
+  // #docregion _buildCategories
+  Widget _buildCategories(List<String> categories) {
+    return ListView.builder(
+      itemCount: _categories.length,
+        padding: const EdgeInsets.all(16.0),
+        itemBuilder: /*1*/ (context, i) {
+
+          return _buildCategoryRow(_categories[i]);
+        });
+  }
+  // #enddocregion _buildCategories
+
+  // #docregion _buildRow
+  Widget _buildCategoryRow(String category) {
+
+    return Card(
+        child: ListTile(
+            title: Text(
+                category,
+                style: _biggerFont),
+            trailing: Icon(Icons.chevron_right),
+            onTap: (){
+              print('xxx');
+
+              Acronym acronym1 = new Acronym("1", "description 1", category);
+              Acronym acronym2 = new Acronym("2", "description 2", category);
+
+              Category selectedCategory = new Category(category, [acronym1, acronym2]);
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CategoryScreen(category: selectedCategory),
+                  settings: RouteSettings(
+                    arguments: selectedCategory,
+                  ),
+                ),
+              );
+
+        }
+        ));
+  }
+// #enddocregion _buildRow
+
+}
+
+
+// Category is immutable, ie widget build is called only once
+class CategoryScreen extends StatelessWidget {
+
+  final Category category;
+
+  CategoryScreen({Key key, @required this.category}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+
+    // Build the UI for this category
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(category.title),
+        //title: Text('Title test'),
+      ),
+      body: _buildCategoryDetails(category),
+    );
+  }
+
+  // #docregion _buildCategoryDetails
+  Widget _buildCategoryDetails(Category category) {
+    return ListView.builder(
+        itemCount: category.items.length,
+        padding: const EdgeInsets.all(16.0),
+        itemBuilder: /*1*/ (context, i) {
+
+          return _buildAcronymRow(category.items[i]);
+        });
+  }
+  // #enddocregion _buildCategoryDetails
+
+
+  // #docregion _buildAcronymRow
+  Widget _buildAcronymRow(Acronym acronym) {
+    return Card(
+        child: ListTile(
+            title: Text(
+                acronym.title,
+                style: _biggerFont),
+            subtitle: Text(acronym.description),
+
+            onTap: () {
+              print('TODO save to favourites');
+            }
+        ));
+  }
+// #enddocregion _buildAcronymRow
+
+}
+
+/// The base class for the different types of items the list can contain.
+/// // ListItem describes individual acronym and their meaning.
+abstract class ListItem {
+  /// The title line to show in a list item.
+  Widget buildTitle(BuildContext context);
+
+  /// The subtitle line, if any, to show in a list item.
+  Widget buildSubtitle(BuildContext context);
+}
+
+/// A ListItem that contains data to display a heading.
+class HeadingItem implements ListItem {
+  final String heading;
+
+  HeadingItem(this.heading);
+
+  Widget buildTitle(BuildContext context) {
+    return Text(
+      "search",
+      style: Theme.of(context).textTheme.headline,
+    );
+  }
+
+  Widget buildSubtitle(BuildContext context) => null;
 }
