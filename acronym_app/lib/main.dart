@@ -39,14 +39,12 @@ class Category {
   Category(this.title, this.items);
 }
 
-final _biggerFont = const TextStyle(fontSize: 18.0);
-
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Acronyms finder',
+      title: 'AcronymsTheme',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -57,7 +55,21 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.green,
+//        primarySwatch: Colors.green,
+        primaryColor: Colors.lightBlue[800],
+        accentColor: Colors.cyan[600],
+        brightness: Brightness.light,
+
+        // Default font family
+        fontFamily: 'LatoRegular',
+
+        // Default text styling for headlines, titles, bodies of text etc.
+        textTheme: TextTheme(
+          headline: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold),
+          title: TextStyle(fontSize: 18.0, fontStyle: FontStyle.italic),
+          body1: TextStyle(fontSize: 16.0, fontFamily: 'Hind'),
+
+        )
       ),
       home: MyHomePage(title: 'Acronyms finder'),
     );
@@ -127,8 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Card(
         child: ListTile(
             title: Text(
-                category,
-                style: TextStyle(fontFamily: 'LatoRegular', fontSize: 18.0)),
+                category),
             trailing: Icon(Icons.chevron_right),
             onTap: (){
               print('xxx');
@@ -170,7 +181,6 @@ class CategoryScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(category.title),
-        //title: Text('Title test'),
       ),
       body: _buildCategoryDetails(category),
     );
@@ -194,8 +204,7 @@ class CategoryScreen extends StatelessWidget {
     return Card(
         child: ListTile(
             title: Text(
-                acronym.title,
-                style: TextStyle(fontFamily: 'LatoRegular', fontSize: 18.0)),
+                acronym.title),
             subtitle: Text(acronym.description),
 
             onTap: () {
