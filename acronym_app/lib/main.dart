@@ -3,8 +3,12 @@
  * Small app written using Flutter to browse acronyms based on categories.
  */
 
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-//import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 
 // Parse json file in the background
 //Future<List<Photo>> fetchPhotos(http.Client client) async {
@@ -19,8 +23,50 @@ import 'package:flutter/material.dart';
 //List<Photo> parseAbbreviations(String responseBody) {
 //  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
 //
-//  return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
+//  return parsed.map<Category>((json) => Category.fromJson(json)).toList();
 //}
+
+// Parse json file in the background
+Future<List<Category>> fetchAllFromAssets(String assetPath) async {
+  return dummyData();
+}
+
+
+List<Category> dummyData() {
+  List<Category> categories = new List();
+  Acronym acronym1 = new Acronym("AWS", "Amazon Web Services", 'Cloud Computing');
+  Acronym acronym2 = new Acronym("S3", "Simple Storage System", 'Cloud Computing');
+
+  categories.add(new Category('CloudComputing', [acronym1, acronym2]));
+
+  Acronym acronym3 = new Acronym("AI", "Artificial Intelligence", 'AI');
+  Acronym acronym4 = new Acronym("IMS", "Intelligent Maintenance Systems", 'AI');
+
+  categories.add(new Category('AI', [acronym3, acronym4]));
+
+  return categories;
+}
+List<Category>  parseAllFromLocalJson() {
+
+  // if no local data source return null;
+
+  List<Category> categories = new List();
+  Acronym acronym1 = new Acronym("1", "description 1", 'Cloud Computing');
+  Acronym acronym2 = new Acronym("2", "description 2", 'Cloud Computing');
+
+  categories.add(new Category('CloudComputing', [acronym1, acronym2]));
+
+  Acronym acronym3 = new Acronym("3", "description 3", 'AI');
+  Acronym acronym4 = new Acronym("4", "description 4", 'AI');
+
+  categories.add(new Category('AI', [acronym3, acronym4]));
+
+
+  for (int i=0; i<20; i++)
+    categories.add(new Category('AI', [acronym3, acronym4]));
+
+  return categories;
+}
 
 void main() => runApp(MyApp());
 
@@ -37,6 +83,13 @@ class Category {
   final List<Acronym> items;
 
   Category(this.title, this.items);
+
+//  factory Category.fromJson(Map<String, dynamic> json) {
+//    return Category(
+//      title: json['title'] as String,
+//      items: json['items'] as List<Acronym>,
+//    );
+//  }
 }
 
 class MyApp extends StatelessWidget {
@@ -97,9 +150,13 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Future<List<Category>> futureCategories;
 
-  final _categories = <String> ['Cloud Computing', 'Blogging', 'AI', 'Database',
-    'Development', 'IT Security', 'Server/IT Infrastructure', 'Network/Internet'];
+  @override
+  void initState() {
+    super.initState();
+    futureCategories = fetchAllFromAssets('acronyms.json');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,49 +169,59 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         title: Text(widget.title),
       ),
-      body: _buildCategories(_categories),
+      body: FutureBuilder<List<Category>>(
+        future: futureCategories,
+        builder:(context, snapshot) {
+          if (snapshot.hasData) {
+            return _buildCategories(snapshot.data);
+          }
+
+          return new Center(child: new CircularProgressIndicator());
+        }
+      ),
+
       floatingActionButton: FloatingActionButton(
-        tooltip: 'Increment',
+        tooltip: 'Add acronym',
         child: Icon(Icons.add),
+
+        onPressed: () {
+          print('Action not supported yet.');
+//          Scaffold.of(context).showSnackBar(new SnackBar(
+//            content: Text('Action not supported yet.'),
+//          ));
+        }
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
 
   // #docregion _buildCategories
-  Widget _buildCategories(List<String> categories) {
+  Widget _buildCategories(List<Category> categories) {
     return ListView.builder(
-      itemCount: _categories.length,
+      itemCount: categories.length,
         padding: const EdgeInsets.all(16.0),
         itemBuilder: /*1*/ (context, i) {
 
-          return _buildCategoryRow(_categories[i]);
+          return _buildCategoryRow(categories[i]);
         });
   }
   // #enddocregion _buildCategories
 
   // #docregion _buildRow
-  Widget _buildCategoryRow(String category) {
+  Widget _buildCategoryRow(Category category) {
 
     return Card(
         child: ListTile(
             title: Text(
-                category),
+                category.title),
             trailing: Icon(Icons.chevron_right),
             onTap: (){
-              print('xxx');
-
-              Acronym acronym1 = new Acronym("1", "description 1", category);
-              Acronym acronym2 = new Acronym("2", "description 2", category);
-
-              Category selectedCategory = new Category(category, [acronym1, acronym2]);
-
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CategoryScreen(category: selectedCategory),
+                  builder: (context) => CategoryScreen(category: category),
                   settings: RouteSettings(
-                    arguments: selectedCategory,
+                    arguments: category,
                   ),
                 ),
               );

@@ -34,7 +34,16 @@ Flutter uses Dart, an object-oriented language, class-based, garbage collected l
 - IPS is done with Settings arguments, similar to intents, POJOs will be serialized automatically.
 - Layouts are not written in XML, but with a widget tree.
 - Flutter is single threaded and run an event loop (like Node.js). For I/O work, async/await methods are all you need.
+- There is no GSON/Jackson/Mochi equivalent in Flutter because reflection is not supported, but instead it has a built-in dart:convert library.
+- Manual JSON decoding is enough for smaller projects, but unfortunately errors will be only caught at runtime.
+- This project uses json_serializable library, an automated source code generator to minimize the risk of having JSON serialization exceptions at runtime.
 
 
 ###Testing in Flutter
 
+
+// TODOs
+animate routes
+search UI
+create json
+improve app theme
