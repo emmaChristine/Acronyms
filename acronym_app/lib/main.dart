@@ -1,6 +1,6 @@
 /**
  *
- * Small app written using Flutter to browse acronyms based on categories.
+ * Small app written using Flutter to browse and search acronyms based on categories.
  */
 
 import 'dart:async';
@@ -26,47 +26,6 @@ import 'package:http/http.dart' as http;
 //  return parsed.map<Category>((json) => Category.fromJson(json)).toList();
 //}
 
-// Parse json file in the background
-Future<List<Category>> fetchAllFromAssets(String assetPath) async {
-  return dummyData();
-}
-
-
-List<Category> dummyData() {
-  List<Category> categories = new List();
-  Acronym acronym1 = new Acronym("AWS", "Amazon Web Services", 'Cloud Computing');
-  Acronym acronym2 = new Acronym("S3", "Simple Storage System", 'Cloud Computing');
-
-  categories.add(new Category('CloudComputing', [acronym1, acronym2]));
-
-  Acronym acronym3 = new Acronym("AI", "Artificial Intelligence", 'AI');
-  Acronym acronym4 = new Acronym("IMS", "Intelligent Maintenance Systems", 'AI');
-
-  categories.add(new Category('AI', [acronym3, acronym4]));
-
-  return categories;
-}
-List<Category>  parseAllFromLocalJson() {
-
-  // if no local data source return null;
-
-  List<Category> categories = new List();
-  Acronym acronym1 = new Acronym("1", "description 1", 'Cloud Computing');
-  Acronym acronym2 = new Acronym("2", "description 2", 'Cloud Computing');
-
-  categories.add(new Category('CloudComputing', [acronym1, acronym2]));
-
-  Acronym acronym3 = new Acronym("3", "description 3", 'AI');
-  Acronym acronym4 = new Acronym("4", "description 4", 'AI');
-
-  categories.add(new Category('AI', [acronym3, acronym4]));
-
-
-  for (int i=0; i<20; i++)
-    categories.add(new Category('AI', [acronym3, acronym4]));
-
-  return categories;
-}
 
 void main() => runApp(MyApp());
 
@@ -108,7 +67,6 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-//        primarySwatch: Colors.green,
         primaryColor: Colors.lightBlue[800],
         accentColor: Colors.cyan[600],
         brightness: Brightness.light,
@@ -150,8 +108,41 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   Future<List<Category>> futureCategories;
 
+  Icon _searchIcon = new Icon(Icons.search);
+  final Icon _closeIcon = new Icon(Icons.close);
+
+  // controls the text label we use as a search bar
+  final TextEditingController _filter = new TextEditingController();
+
+  // names filtered by search
+  List filteredAcronyms = new List<Acronym>();
+
+  // names we get from local data set
+  List allAcronyms = new List<Acronym>();
+
+  String _searchText = "";
+
+  Widget _appBarTitle = new Text( 'Search Example' );
+
+  _MyHomePageState() {
+    _filter.addListener(() {
+      if (_filter.text.isEmpty) {
+        setState(() {
+          _searchText = "";
+          filteredAcronyms = allAcronyms;
+        });
+      } else {
+        setState(() {
+          _searchText = _filter.text;
+        });
+      }
+    });
+  }
+
+  // load data once, as it is immutable
   @override
   void initState() {
     super.initState();
@@ -167,13 +158,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
-        title: Text(widget.title),
+        title: _appBarTitle,
+        centerTitle: true,
+        leading: new IconButton(
+          icon: _searchIcon,
+          onPressed: _searchPressed,
+        )
       ),
       body: FutureBuilder<List<Category>>(
         future: futureCategories,
         builder:(context, snapshot) {
           if (snapshot.hasData) {
-            return _buildCategories(snapshot.data);
+            return _buildHomePageList(snapshot.data);
           }
 
           return new Center(child: new CircularProgressIndicator());
@@ -194,9 +190,101 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the
+    // widget tree.
+    _filter.dispose();
+    super.dispose();
+  }
 
-  // #docregion _buildCategories
-  Widget _buildCategories(List<Category> categories) {
+  // Parse json file in the background
+  Future<List<Category>> fetchAllFromAssets(String assetPath) async {
+
+    return dummyData();
+  }
+
+  List<Category> dummyData() {
+    List<Category> categories = new List();
+    Acronym acronym1 = new Acronym("AWS", "Amazon Web Services", 'Cloud Computing');
+    Acronym acronym2 = new Acronym("S3", "Simple Storage System", 'Cloud Computing');
+
+    categories.add(new Category('CloudComputing', [acronym1, acronym2]));
+
+    Acronym acronym3 = new Acronym("AI", "Artificial Intelligence", 'AI');
+    Acronym acronym4 = new Acronym("IMS", "Intelligent Maintenance Systems", 'AI');
+    Acronym acronym5 = new Acronym("AISSS", "AISS ... Maintenance Systems", 'AI');
+
+    categories.add(new Category('AI', [acronym3, acronym4, acronym5]));
+
+
+    setState(() {
+//      categories.forEach((category) => allAcronyms.add(category.items));
+
+      allAcronyms.add(acronym1);
+      allAcronyms.add(acronym2);
+      allAcronyms.add(acronym3);
+      allAcronyms.add(acronym4);
+      allAcronyms.add(acronym5);
+
+      filteredAcronyms = allAcronyms;
+    });
+
+    return categories;
+  }
+
+  List<Category>  parseAllFromLocalJson() {
+    // if no local data source return null;
+    List<Category> categories = new List();
+
+    return categories;
+  }
+
+  void _searchPressed() {
+    setState(() {
+      if (this._searchIcon.icon == Icons.search) {
+        this._searchIcon = _closeIcon;
+        this._appBarTitle = new TextField(
+          textCapitalization: TextCapitalization.characters,
+          controller: _filter,
+          decoration: new InputDecoration(
+              prefixIcon: _searchIcon,
+              hintText: 'Search for an acronym ...'
+          ),
+        );
+      } else {
+        this._searchIcon = new Icon(Icons.search);
+        this._appBarTitle = new Text( 'Search Example' );
+        /// reset filter
+        filteredAcronyms = allAcronyms;
+        _filter.clear();
+      }
+    });
+  }
+
+  // #docregion _buildHomePageList
+  Widget _buildHomePageList(List<Category> categories) {
+
+    if (!(_searchText.isEmpty)) {
+      List tempAcronymList = new List<Acronym>();
+
+      /// look for acronym
+      for ( int i=0; i < filteredAcronyms.length; i++) {
+        if (filteredAcronyms[i].title.toLowerCase().startsWith(_searchText.toLowerCase())) {
+          tempAcronymList.add(filteredAcronyms[i]);
+        }
+      }
+      filteredAcronyms = tempAcronymList;
+
+      return ListView.builder(
+          itemCount: allAcronyms == null ? 0: filteredAcronyms.length,
+          padding: const EdgeInsets.all(16.0),
+          itemBuilder: /*1*/ (context, i) {
+
+            return _buildSearchResultRow(filteredAcronyms[i]);
+          });
+    }
+
     return ListView.builder(
       itemCount: categories.length,
         padding: const EdgeInsets.all(16.0),
@@ -205,7 +293,24 @@ class _MyHomePageState extends State<MyHomePage> {
           return _buildCategoryRow(categories[i]);
         });
   }
-  // #enddocregion _buildCategories
+  // #enddocregion _buildHomePageList
+
+  // #docregion _buildSearchResultRow
+  Widget _buildSearchResultRow(Acronym result) {
+
+    return Card (
+        child: ListTile(
+          title: Text(
+              result.title),
+          subtitle: Text(
+              result.description,
+              style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Colors.blueGrey[600])),
+
+    ));
+  }
+  // #enddocregion _buildSearchResultRow
 
   // #docregion _buildRow
   Widget _buildCategoryRow(Category category) {
@@ -215,6 +320,7 @@ class _MyHomePageState extends State<MyHomePage> {
             title: Text(
                 category.title),
             trailing: Icon(Icons.chevron_right),
+            contentPadding: const EdgeInsets.all(8.0),
             onTap: (){
               Navigator.push(
                 context,
@@ -234,7 +340,7 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 
-// Category is immutable, ie widget build is called only once
+/// Category is immutable, ie widget build is called only once.
 class CategoryScreen extends StatelessWidget {
 
   final Category category;
@@ -257,7 +363,7 @@ class CategoryScreen extends StatelessWidget {
   Widget _buildCategoryDetails(Category category) {
     return ListView.builder(
         itemCount: category.items.length,
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 2.0),
         itemBuilder: /*1*/ (context, i) {
 
           return _buildAcronymRow(category.items[i]);
@@ -272,7 +378,11 @@ class CategoryScreen extends StatelessWidget {
         child: ListTile(
             title: Text(
                 acronym.title),
-            subtitle: Text(acronym.description),
+            subtitle: Text(
+                acronym.description,
+                style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: Colors.blueGrey[600])),
 
             onTap: () {
               print('TODO save to favourites');
