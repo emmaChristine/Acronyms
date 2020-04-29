@@ -13,24 +13,25 @@ Flutter uses Dart, an object-oriented language, class-based, garbage collected l
 
 * Install [flutter](https://flutter.dev/docs/get-started/install/macos).
 
-** Android
+#### Android
 
-	* Install Android Studio with Flutter plugin.
+* Install Android Studio with Flutter plugin.
 
-	* Run the app from the IDE or from command line `gradle assembleDebug`.
+* Run the app from the IDE or from command line `gradle assembleDebug`.
 
-** iOS
+#### iOS
 
-	* Install XCode and configure Flutter.
+* Install XCode and configure Flutter.
 
-	* Run the app from the IDE.
+* Run the app from the IDE.
 
-** Web
-	* run `flutter channel beta` `flutter upgrade` and `flutter config --enable-web` to use the latest version of the Flutter SDK and enable web support.
+#### Web
 
-	* run `flutter run -d chrome` to serve the app from localhost in Chrome
+* Run `flutter channel beta` `flutter upgrade` and `flutter config --enable-web` to use the latest version of the Flutter SDK and enable web support.
 
-	* [throubleshooting](https://flutter.dev/docs/get-started/web)
+* Run `flutter run -d chrome` to serve the app from localhost in Chrome.
+
+* [throubleshooting](https://flutter.dev/docs/get-started/web)
 
 
 ### Flutter advantages
