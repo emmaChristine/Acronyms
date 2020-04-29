@@ -4,7 +4,33 @@ Tech Abbreviations
 Draft app written using Flutter to browse acronyms based on categories.
 Flutter uses Dart, an object-oriented language, class-based, garbage collected language with C-style syntax.
 
+![](https://github.com/emmaChristine/Acronyms/tree/master/screenshots/Acronyms_web.gif)
+
+
 ### Setup & install
+
+* Clone this repository.
+
+* Install [flutter](https://flutter.dev/docs/get-started/install/macos).
+
+** Android
+
+	* Install Android Studio with Flutter plugin.
+
+	* Run the app from the IDE or from command line `gradle assembleDebug`.
+
+** iOS
+
+	* Install XCode and configure Flutter.
+
+	* Run the app from the IDE.
+
+** Web
+	* run `flutter channel beta` `flutter upgrade` and `flutter config --enable-web` to use the latest version of the Flutter SDK and enable web support.
+
+	* run `flutter run -d chrome` to serve the app from localhost in Chrome
+
+	* [throubleshooting](https://flutter.dev/docs/get-started/web)
 
 
 ### Flutter advantages
@@ -25,8 +51,7 @@ Flutter uses Dart, an object-oriented language, class-based, garbage collected l
 ## Implementation details:
 
 
-### Design & user stories 
-https://www.figma.com/file/fihPfODpkticU4brhVmFf8/Acronyms?node-id=1%3A2
+### [Design & user stories ](https://www.figma.com/file/fihPfODpkticU4brhVmFf8/Acronyms?node-id=1%3A2)
 
 
 ### Dart code style based on guidelines

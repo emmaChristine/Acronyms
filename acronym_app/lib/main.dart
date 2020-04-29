@@ -208,14 +208,24 @@ class _MyHomePageState extends State<MyHomePage> {
     List<Category> categories = new List();
     Acronym acronym1 = new Acronym("AWS", "Amazon Web Services", 'Cloud Computing');
     Acronym acronym2 = new Acronym("S3", "Simple Storage System", 'Cloud Computing');
+    Acronym acronym3 = new Acronym("GCP", "Google Cloud Platform", 'Cloud Computing');
+    Acronym acronym4 = new Acronym("GCLB", "Google Cloud Load Balancer", 'Cloud Computing');
+    Acronym acronym5 = new Acronym("AMI", "Amazon Machine Image", 'Cloud Computing');
 
-    categories.add(new Category('CloudComputing', [acronym1, acronym2]));
+    categories.add(new Category('CloudComputing', [acronym1, acronym2, acronym3, acronym4, acronym5]));
 
-    Acronym acronym3 = new Acronym("AI", "Artificial Intelligence", 'AI');
-    Acronym acronym4 = new Acronym("IMS", "Intelligent Maintenance Systems", 'AI');
-    Acronym acronym5 = new Acronym("AISSS", "AISS ... Maintenance Systems", 'AI');
+    Acronym acronym6 = new Acronym("AI", "Artificial Intelligence", 'AI');
+    Acronym acronym7 = new Acronym("IMS", "Intelligent Maintenance Systems", 'AI');
+    Acronym acronym8 = new Acronym("ML", "Machine Learning", 'AI');
+    Acronym acronym9 = new Acronym("NI", "Natural Intelligence", 'AI');
+    Acronym acronym10 = new Acronym("NLP", "Natural Language Processing", 'AI');
+    Acronym acronym11 = new Acronym("CNN", "Convolutional Neural Network", 'AI');
+    Acronym acronym12 = new Acronym("RNN", "Recurrent Neural Network", 'AI');
+    Acronym acronym13 = new Acronym("CV", "Computer Vision", 'AI');
+    Acronym acronym14 = new Acronym("HMD", "Head Mounted Display", 'AI');
 
-    categories.add(new Category('AI', [acronym3, acronym4, acronym5]));
+    categories.add(new Category('AI', [acronym6, acronym7, acronym8, acronym9, acronym10, acronym11,
+    acronym12, acronym13, acronym14]));
 
 
     setState(() {
@@ -226,6 +236,15 @@ class _MyHomePageState extends State<MyHomePage> {
       allAcronyms.add(acronym3);
       allAcronyms.add(acronym4);
       allAcronyms.add(acronym5);
+      allAcronyms.add(acronym6);
+      allAcronyms.add(acronym7);
+      allAcronyms.add(acronym8);
+      allAcronyms.add(acronym9);
+      allAcronyms.add(acronym10);
+      allAcronyms.add(acronym11);
+      allAcronyms.add(acronym12);
+      allAcronyms.add(acronym13);
+      allAcronyms.add(acronym14);
 
       filteredAcronyms = allAcronyms;
     });
