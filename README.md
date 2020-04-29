@@ -4,7 +4,7 @@ Tech Abbreviations
 Draft app written using Flutter to browse acronyms based on categories.
 Flutter uses Dart, an object-oriented language, class-based, garbage collected language with C-style syntax.
 
-![](https://github.com/emmaChristine/Acronyms/tree/master/screenshots/Acronyms_web.gif)
+![web](https://github.com/emmaChristine/Acronyms/tree/master/screenshots/web.gif)
 
 
 ### Setup & install
