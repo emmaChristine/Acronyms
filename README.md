@@ -71,7 +71,13 @@ Flutter uses Dart, an object-oriented language, class-based, garbage collected l
 - This project uses json_serializable library, an automated source code generator to minimize the risk of having JSON serialization exceptions at runtime.
 
 
-### Testing & linter in Flutter
+### Optimizations
+
+## Use a `Prefix Tree` for a fast search when the dataset will become very large.
+
+Using a Trie we can insert and find strings in O(L) time where L is the length of a single word.
+
+![trie](https://github.com/emmaChristine/Acronyms/blob/master/screenshots/prefix_tree.png)
 
 
 ### Known issues
