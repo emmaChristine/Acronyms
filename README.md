@@ -34,6 +34,36 @@ Flutter uses Dart, an object-oriented language, class-based, garbage collected l
 * [throubleshooting](https://flutter.dev/docs/get-started/web)
 
 
+### Acronyms data set
+
+* All the acronyms are provided in a local JSON file: [assets/acronyms.json](https://github.com/emmaChristine/Acronyms/blob/master/assets/acronyms.json)
+
+Structure is as follows:
+
+```json
+[
+  {
+    "category": "AI",
+    "acronyms": [
+        { "title":"AI",
+          "description":"Artificial Intelligence"
+        },
+    ...
+	]
+  },
+  {
+    "category": "Cloud Computing",
+    "acronyms": [
+        { "title":"AAWSI",
+          "description":"Amazon Web Services"
+        },
+    ...
+	]
+  }
+]
+```
+
+
 ### Flutter advantages
 
 * Native UI
@@ -69,13 +99,16 @@ Flutter uses Dart, an object-oriented language, class-based, garbage collected l
 - There is no GSON/Jackson/Mochi equivalent in Flutter because reflection is not supported, but instead it has a built-in dart:convert library.
 - Manual JSON decoding is enough for smaller projects, but unfortunately errors will be only caught at runtime.
 - This project uses json_serializable library, an automated source code generator to minimize the risk of having JSON serialization exceptions at runtime.
+- POJO translates to PODO.
 
 
 ### Optimizations
 
-## Use a `Prefix Tree` for a fast search when the dataset will become very large.
+#### Use a `Prefix Tree` for a fast search when the dataset will become very large.
 
 Using a Trie we can insert and find strings in O(L) time where L is the length of a single word.
+This enables an efficient auto-complete.
+
 
 ![trie](https://github.com/emmaChristine/Acronyms/blob/master/screenshots/prefix_tree.png)
 

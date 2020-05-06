@@ -4,52 +4,15 @@
  */
 
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
-
-// Parse json file in the background
-//Future<List<Photo>> fetchPhotos(http.Client client) async {
-//  final response =
-//  await client.get('https://jsonplaceholder.typicode.com/photos');
-//
-//  // Use the compute function to run parsePhotos in a separate isolate.
-//  return compute(parsePhotos, response.body);
-//}
-
-// A function that converts a response body into a List<Abbreviation>.
-//List<Photo> parseAbbreviations(String responseBody) {
-//  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-//
-//  return parsed.map<Category>((json) => Category.fromJson(json)).toList();
-//}
+import 'package:acronymapp/model/acronym_model.dart';
+import 'package:acronymapp/services/acronym_service.dart';
 
 
 void main() => runApp(MyApp());
 
-class Acronym {
-  final String title;
-  final String description;
-  final String category;
-
-  Acronym(this.title, this.description, this.category);
-}
-
-class Category {
-  final String title;
-  final List<Acronym> items;
-
-  Category(this.title, this.items);
-
-//  factory Category.fromJson(Map<String, dynamic> json) {
-//    return Category(
-//      title: json['title'] as String,
-//      items: json['items'] as List<Acronym>,
-//    );
-//  }
-}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -109,7 +72,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  Future<List<Category>> futureCategories;
+  Future<CategoryList> getCategories;
 
   Icon _searchIcon = new Icon(Icons.search);
   final Icon _closeIcon = new Icon(Icons.close);
@@ -146,7 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    futureCategories = fetchAllFromAssets('acronyms.json');
+    getCategories = loadAcronyms('assets/acronyms.json');
   }
 
   @override
@@ -165,16 +128,16 @@ class _MyHomePageState extends State<MyHomePage> {
           onPressed: _searchPressed,
         )
       ),
-      body: FutureBuilder<List<Category>>(
-        future: futureCategories,
-        builder:(context, snapshot) {
-          if (snapshot.hasData) {
-            return _buildHomePageList(snapshot.data);
-          }
-
-          return new Center(child: new CircularProgressIndicator());
+    body: FutureBuilder<CategoryList>(
+      future: getCategories,
+      builder:(context, snapshot) {
+        if (snapshot.hasData) {
+          return _buildHomePage(snapshot.data);
         }
-      ),
+
+        return new Center(child: new CircularProgressIndicator());
+      }
+    ),
 
       floatingActionButton: FloatingActionButton(
         tooltip: 'Add acronym',
@@ -196,67 +159,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // widget tree.
     _filter.dispose();
     super.dispose();
-  }
-
-  // Parse json file in the background
-  Future<List<Category>> fetchAllFromAssets(String assetPath) async {
-
-    return dummyData();
-  }
-
-  List<Category> dummyData() {
-    List<Category> categories = new List();
-    Acronym acronym1 = new Acronym("AWS", "Amazon Web Services", 'Cloud Computing');
-    Acronym acronym2 = new Acronym("S3", "Simple Storage System", 'Cloud Computing');
-    Acronym acronym3 = new Acronym("GCP", "Google Cloud Platform", 'Cloud Computing');
-    Acronym acronym4 = new Acronym("GCLB", "Google Cloud Load Balancer", 'Cloud Computing');
-    Acronym acronym5 = new Acronym("AMI", "Amazon Machine Image", 'Cloud Computing');
-
-    categories.add(new Category('CloudComputing', [acronym1, acronym2, acronym3, acronym4, acronym5]));
-
-    Acronym acronym6 = new Acronym("AI", "Artificial Intelligence", 'AI');
-    Acronym acronym7 = new Acronym("IMS", "Intelligent Maintenance Systems", 'AI');
-    Acronym acronym8 = new Acronym("ML", "Machine Learning", 'AI');
-    Acronym acronym9 = new Acronym("NI", "Natural Intelligence", 'AI');
-    Acronym acronym10 = new Acronym("NLP", "Natural Language Processing", 'AI');
-    Acronym acronym11 = new Acronym("CNN", "Convolutional Neural Network", 'AI');
-    Acronym acronym12 = new Acronym("RNN", "Recurrent Neural Network", 'AI');
-    Acronym acronym13 = new Acronym("CV", "Computer Vision", 'AI');
-    Acronym acronym14 = new Acronym("HMD", "Head Mounted Display", 'AI');
-
-    categories.add(new Category('AI', [acronym6, acronym7, acronym8, acronym9, acronym10, acronym11,
-    acronym12, acronym13, acronym14]));
-
-
-    setState(() {
-//      categories.forEach((category) => allAcronyms.add(category.items));
-
-      allAcronyms.add(acronym1);
-      allAcronyms.add(acronym2);
-      allAcronyms.add(acronym3);
-      allAcronyms.add(acronym4);
-      allAcronyms.add(acronym5);
-      allAcronyms.add(acronym6);
-      allAcronyms.add(acronym7);
-      allAcronyms.add(acronym8);
-      allAcronyms.add(acronym9);
-      allAcronyms.add(acronym10);
-      allAcronyms.add(acronym11);
-      allAcronyms.add(acronym12);
-      allAcronyms.add(acronym13);
-      allAcronyms.add(acronym14);
-
-      filteredAcronyms = allAcronyms;
-    });
-
-    return categories;
-  }
-
-  List<Category>  parseAllFromLocalJson() {
-    // if no local data source return null;
-    List<Category> categories = new List();
-
-    return categories;
   }
 
   void _searchPressed() {
@@ -281,10 +183,17 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  // #docregion _buildHomePageList
-  Widget _buildHomePageList(List<Category> categories) {
+  // #docregion _buildHomePage
+  Widget _buildHomePage(CategoryList categories) {
 
-    if (!(_searchText.isEmpty)) {
+    allAcronyms.clear();
+    filteredAcronyms.clear();
+
+    categories.categories.forEach((category) => allAcronyms.addAll(category.items));
+    filteredAcronyms = allAcronyms;
+
+
+    if (_searchText.isNotEmpty) {
       List tempAcronymList = new List<Acronym>();
 
       /// look for acronym
@@ -305,14 +214,14 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     return ListView.builder(
-      itemCount: categories.length,
+        itemCount: categories.categories.length,
         padding: const EdgeInsets.all(16.0),
         itemBuilder: /*1*/ (context, i) {
 
-          return _buildCategoryRow(categories[i]);
+          return _buildCategoryRow(categories.categories[i]);
         });
   }
-  // #enddocregion _buildHomePageList
+  // #enddocregion _buildHomePage
 
   // #docregion _buildSearchResultRow
   Widget _buildSearchResultRow(Acronym result) {

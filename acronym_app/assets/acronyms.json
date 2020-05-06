@@ -1,0 +1,67 @@
+[
+  {
+    "category": "AI",
+    "acronyms": [
+        { "title":"AI",
+          "description":"Artificial Intelligence"
+        },
+        {  "title":"ML",
+            "description":"Machine Learning"
+        },
+        { "title":"NI",
+          "description":"Natural Intelligence"
+        },
+        { "title":"MI",
+           "description":"Machine Intelligence"
+        },
+        { "title":"NLP",
+           "description":"Natural Language Processing"
+        },
+        { "title":"CV",
+           "description":"Computer Vision"
+        },
+        { "title":"SR",
+          "description":"Speech Recognition"
+        },
+        { "title":"ANN",
+           "description":"Artificial Neural Network"
+        },
+        { "title":"RPA",
+           "description":"Robotic Process Automation"
+        },
+        { "title":"DSBS",
+           "description":"Dual Sensor Brake Support"
+        }
+    ]
+  },
+
+  {
+    "category": "Cloud Computing",
+    "acronyms": [
+        { "title":"AWS",
+          "description":"Amazon Web Services"
+        },
+        { "title":"S3",
+           "description":"Simple Storage System"
+        },
+        { "title":"GCP",
+           "description":"Google Cloud Platform"
+        },
+        { "title":"GCLB",
+           "description":"Google Cloud Load Balancer"
+        },
+        { "title":"AMI",
+          "description":"Amazon Machine Image"
+        },
+        { "title":"ARN",
+           "description":"Amazon Resource Name"
+        },
+        { "title":"EFS",
+           "description":"Elastic File System"
+        },
+        { "title":"EMR",
+           "description":"Elastic Map Reduce"
+        }
+      ]
+    }
+]
