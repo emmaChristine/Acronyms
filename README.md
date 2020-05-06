@@ -36,7 +36,7 @@ Flutter uses Dart, an object-oriented language, class-based, garbage collected l
 
 ### Acronyms data set
 
-* All the acronyms are provided in a local JSON file: [assets/acronyms.json](https://github.com/emmaChristine/Acronyms/blob/master/assets/acronyms.json)
+* All the acronyms are provided in a local JSON file: [assets/acronyms.json](https://github.com/emmaChristine/Acronyms/blob/master/acronym_app/assets/acronyms.json)
 
 Structure is as follows:
 
